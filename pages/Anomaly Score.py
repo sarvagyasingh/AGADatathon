@@ -98,7 +98,7 @@ score_df = pd.DataFrame(agency_scores)
 
 # Display scores
 st.subheader("📊 Agency Transparency Scores")
-st.write(score_df.sort_values(by="Transparency Score", ascending=False))
+st.write(score_df.sort_values(by="Transparency Score", ascending=True))
 
 # **Visualization: Agencies by Anomaly Score**
 st.subheader("📉 Transparency Score by Agency")

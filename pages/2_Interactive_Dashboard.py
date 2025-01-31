@@ -142,19 +142,31 @@ def plot_subagency_funding_histogram(agency_name, data):
     # Sort sub-agencies by funding deviation
     subagency_funding = subagency_funding.sort_values(by="Funding Deviation", ascending=False)
 
-    # Create color scale based on deviation
-    colors = subagency_funding["Funding Deviation"].apply(lambda x: "green" if x >= 0 else "red")
+    # **Separate positive and negative deviations**
+    positive_deviation = subagency_funding[subagency_funding["Funding Deviation"] >= 0]
+    negative_deviation = subagency_funding[subagency_funding["Funding Deviation"] < 0]
 
     # Create interactive bar chart
     fig = go.Figure()
 
+    # **Green Bars (Above Avg)**
     fig.add_trace(go.Bar(
-        x=subagency_funding["awarding_sub_agency_name"],
-        y=subagency_funding["Funding Deviation"],
-        text=[f"${val:,.0f}" for val in subagency_funding["Average Funding Given"]],  # Display values
+        x=positive_deviation["awarding_sub_agency_name"],
+        y=positive_deviation["Funding Deviation"],
+        text=[f"${val:,.0f}" for val in positive_deviation["Average Funding Given"]],
         textposition="outside",
-        marker=dict(color=colors),
-        name="Deviation from Avg Funding"
+        marker=dict(color="green"),
+        name="Above Agency Average"  # ✅ Separate legend entry
+    ))
+
+    # **Red Bars (Below Avg)**
+    fig.add_trace(go.Bar(
+        x=negative_deviation["awarding_sub_agency_name"],
+        y=negative_deviation["Funding Deviation"],
+        text=[f"${val:,.0f}" for val in negative_deviation["Average Funding Given"]],
+        textposition="outside",
+        marker=dict(color="red"),
+        name="Below Agency Average"  # ✅ Separate legend entry
     ))
 
     # Add a horizontal line for the global average funding
@@ -182,6 +194,7 @@ def plot_subagency_funding_histogram(agency_name, data):
 
     # Display the chart in Streamlit
     st.plotly_chart(fig, use_container_width=True)
+
 
 
 # Example usage inside Streamlit
