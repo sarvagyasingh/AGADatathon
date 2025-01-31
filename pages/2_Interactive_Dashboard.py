@@ -8,11 +8,6 @@ import gdown
 # Initialize inflect engine for number-to-word conversion
 p = inflect.engine()
 
-file_id = "1mD5VjHz5zO4Ou3sS7H4BDrIvJ-gQIo8m"
-url = f"https://drive.google.com/uc?id={file_id}"
-output = "grant_combined.csv"
-gdown.download(url, output, quiet=False)
-
 st.set_page_config(
     page_title="Federal Spending Transparency Dashboard",
     page_icon="📊",
@@ -40,25 +35,11 @@ st.markdown(
 #data_path = '/Users/sarvagya/Developer/agaDatathon2/grant_combined.csv'
 
 
-@st.cache_data
-def load_data():
-    """Loads the dataset with necessary columns for key metrics."""
-    selected_columns = [
-        "total_obligated_amount",
-        "total_outlayed_amount",
-        "assistance_award_unique_key",  # To count total grants
-        "awarding_agency_name",  # To count total agencies
-        "recipient_name",  # To count total recipients
-        "award_latest_action_date",  # Date range (though hardcoded below)
-        "total_funding_amount",
-        "recipient_state_name",
-        "awarding_sub_agency_name"
-    ]
-    return pd.read_csv(output, usecols=selected_columns, low_memory=False)
-
-
-# Load dataset with selected columns
-dataset = load_data()
+if "dataset" in st.session_state and st.session_state["dataset_loaded"]:
+    dataset = st.session_state["dataset"]
+else:
+    st.warning("Dataset is still loading, please wait...")
+    st.stop()
 
 # Calculate Metrics
 total_grants = dataset["assistance_award_unique_key"].nunique()

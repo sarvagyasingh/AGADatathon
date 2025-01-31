@@ -1,4 +1,6 @@
 import streamlit as st
+import os
+import pandas as pd
 
 # Main app entry point
 st.set_page_config(
@@ -46,3 +48,39 @@ st.markdown("""
 """)
 
 st.info("🔍 Select a page from the sidebar to get started!")
+
+# Preload dataset in session state
+if "dataset" not in st.session_state:
+    st.session_state["dataset_loaded"] = False
+
+
+    @st.cache_data
+    def load_data():
+        """Loads the dataset with necessary columns for key metrics."""
+        file_id = "1mD5VjHz5zO4Ou3sS7H4BDrIvJ-gQIo8m"
+        url = f"https://drive.google.com/uc?id={file_id}"
+        output = "grant_combined.csv"
+
+        if not os.path.exists(output):
+            gdown.download(url, output, quiet=True)
+
+        selected_columns = [
+            "assistance_award_unique_key",
+            "award_id_fain",
+            "award_id_uri",
+            "total_obligated_amount",
+            "total_outlayed_amount",
+            "total_funding_amount",
+            "award_base_action_date",
+            "award_latest_action_date",
+            "awarding_agency_name",
+            "recipient_name",
+            "awarding_sub_agency_name",
+            'recipient_state_name'
+        ]
+        return pd.read_csv(output, usecols=selected_columns, low_memory=False)
+
+
+    # Load dataset in the background
+    st.session_state["dataset"] = load_data()
+    st.session_state["dataset_loaded"] = True

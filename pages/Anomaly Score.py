@@ -30,33 +30,11 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Google Drive dataset download (if not already downloaded)
-file_id = "1mD5VjHz5zO4Ou3sS7H4BDrIvJ-gQIo8m"
-url = f"https://drive.google.com/uc?id={file_id}"
-output = "grant_combined.csv"
-
-if not os.path.exists(output):
-    gdown.download(url, output, quiet=False)
-
-# Load dataset
-@st.cache_data
-def load_data():
-    """Loads the dataset with necessary columns for anomaly detection."""
-    selected_columns = [
-        "assistance_award_unique_key",
-        "award_id_fain",
-        "award_id_uri",
-        "total_obligated_amount",
-        "total_outlayed_amount",
-        "total_funding_amount",
-        "award_base_action_date",
-        "award_latest_action_date",
-        "awarding_agency_name"
-    ]
-    return pd.read_csv(output, usecols=selected_columns, low_memory=False)
-
-# Load data
-dataset = load_data()
+if "dataset" in st.session_state and st.session_state["dataset_loaded"]:
+    dataset = st.session_state["dataset"]
+else:
+    st.warning("Dataset is still loading, please wait...")
+    st.stop()
 
 # Function to calculate SMB Transparency Score
 def calculate_smb_transparency_score(df, agency_name):
