@@ -1,5 +1,4 @@
 pandas
 inflect
-plotly.express
-plotly.graph_objects
+plotly
 gdown
