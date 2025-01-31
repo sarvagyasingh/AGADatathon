@@ -76,7 +76,10 @@ if "dataset" not in st.session_state:
             "awarding_agency_name",
             "recipient_name",
             "awarding_sub_agency_name",
-            'recipient_state_name'
+            'recipient_state_name',
+            'recipient_state_code',
+            'period_of_performance_start_date',
+            'period_of_performance_current_end_date'
         ]
         return pd.read_csv(output, usecols=selected_columns, low_memory=False)
 

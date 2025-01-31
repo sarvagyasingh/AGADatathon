@@ -187,3 +187,164 @@ def plot_subagency_funding_histogram(agency_name, data):
 # Example usage inside Streamlit
 agency_input = st.selectbox("Select an awarding agency:", dataset["awarding_agency_name"].unique(), key="agency_select")
 plot_subagency_funding_histogram(agency_input, dataset)
+
+def plot_agency_funding_by_state(df, agency_name):
+    """
+    Generates a choropleth map displaying the number of funding instances
+    per state for a given agency in Streamlit.
+
+    Parameters:
+        df (DataFrame): Federal spending dataset.
+        agency_name (str): The agency name to filter and visualize.
+
+    Returns:
+        Displays an interactive Plotly choropleth map in Streamlit.
+    """
+
+    # Filter for the selected agency
+    agency_data = df[df["awarding_agency_name"] == agency_name]
+
+    if agency_data.empty:
+        st.warning(f"No records found for '{agency_name}'.")
+        return
+
+    # Group by state and count number of funding instances
+    state_funding_counts = agency_data.groupby(
+        ['recipient_state_name', 'recipient_state_code']
+    ).size().reset_index(name="Funding Instances")
+
+    # Create choropleth map
+    fig = px.choropleth(
+        state_funding_counts,
+        locations="recipient_state_code",
+        locationmode="USA-states",
+        color="Funding Instances",
+        hover_name="recipient_state_name",
+        color_continuous_scale="Viridis",
+        scope="usa",
+        title=f"📍 Funding Instances Per State - {agency_name}"
+    )
+
+    # Adjust map appearance
+    fig.update_geos(fitbounds="locations", visible=False)
+    fig.update_layout(margin={"r":0,"t":40,"l":0,"b":0})
+
+    # Display the figure in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+
+
+# 🏛️ Use Existing Dropdown to Control This Visualization
+plot_agency_funding_by_state(dataset, agency_input)
+
+def plot_subagency_obligated_vs_outlayed(df, agency_name):
+    """
+    Generates a grouped bar chart comparing obligated vs. outlayed amounts
+    for each sub-agency within the selected agency.
+
+    Parameters:
+        df (DataFrame): Federal spending dataset.
+        agency_name (str): The selected agency name.
+
+    Returns:
+        Displays an interactive Plotly grouped bar chart in Streamlit.
+    """
+
+    # Filter data for the selected agency
+    agency_data = df[df["awarding_agency_name"] == agency_name]
+
+    if agency_data.empty:
+        st.warning(f"No records found for '{agency_name}'.")
+        return
+
+    # Group by sub-agency and sum up obligated & outlayed amounts
+    subagency_funding = agency_data.groupby("awarding_sub_agency_name")[
+        ["total_obligated_amount", "total_outlayed_amount"]
+    ].sum().reset_index()
+
+    # Check if data is available
+    if subagency_funding.empty:
+        st.warning(f"No funding data available for sub-agencies under '{agency_name}'.")
+        return
+
+    # Create grouped bar chart
+    fig = px.bar(
+        subagency_funding.melt(id_vars="awarding_sub_agency_name",
+                               value_vars=["total_obligated_amount", "total_outlayed_amount"],
+                               var_name="Funding Type",
+                               value_name="Amount"),
+        x="awarding_sub_agency_name",
+        y="Amount",
+        color="Funding Type",
+        barmode="group",
+        title=f"💰 Obligated vs. Outlayed Amount by Sub-Agency - {agency_name}",
+        labels={"awarding_sub_agency_name": "Sub-Agency", "Amount": "Funding Amount ($)"},
+        text_auto=True
+    )
+
+    # Layout Adjustments
+    fig.update_xaxes(tickangle=-45)
+    fig.update_layout(
+        xaxis_title="Sub-Agency",
+        yaxis_title="Funding Amount ($)",
+        margin={"r": 40, "t": 40, "l": 40, "b": 120},
+        height=600
+    )
+
+    # Display the figure in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+
+
+# 📊 Call the function using the existing dropdown
+plot_subagency_obligated_vs_outlayed(dataset, agency_input)
+
+def plot_total_vs_anomalous_grants(df, agency_name):
+    """
+    Generates a pie chart showing the proportion of total grants vs. anomalous grants
+    for a selected agency in Streamlit.
+
+    Parameters:
+        df (DataFrame): Federal spending dataset.
+        agency_name (str): The selected agency name.
+
+    Returns:
+        Displays an interactive Plotly pie chart in Streamlit.
+    """
+
+    # Filter data for the selected agency
+    agency_data = df[df["awarding_agency_name"] == agency_name]
+
+    if agency_data.empty:
+        st.warning(f"No records found for '{agency_name}'.")
+        return
+
+    total_counts = len(agency_data)
+
+    # Identify anomalies where performance start date is greater than award issue date
+    anomalies = agency_data[
+        (agency_data["period_of_performance_start_date"] < agency_data["award_base_action_date"]) |
+        (agency_data["award_base_action_date"] > agency_data["period_of_performance_current_end_date"])
+    ]
+
+    anomalies_filtered_counts = len(anomalies)
+
+    # Data for Pie Chart
+    labels = ["Valid Grants", "Anomalous Grants"]
+    values = [total_counts - anomalies_filtered_counts, anomalies_filtered_counts]
+    colors = ["steelblue", "red"]
+
+    # Create Pie Chart
+    fig = px.pie(
+        names=labels,
+        values=values,
+        title=f"🔍 Total vs Anomalous Grants for {agency_name}",
+        color=labels,
+        color_discrete_map={"Valid Grants": "steelblue", "Anomalous Grants": "red"},
+        hole=0.4
+    )
+
+    # Display the figure in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+
+
+# 📊 Call the function using the existing dropdown
+plot_total_vs_anomalous_grants(dataset, agency_input)
