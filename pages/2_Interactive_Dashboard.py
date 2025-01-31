@@ -3,9 +3,15 @@ import pandas as pd
 import inflect
 import plotly.express as px
 import plotly.graph_objects as go
+import gdown
 
 # Initialize inflect engine for number-to-word conversion
 p = inflect.engine()
+
+file_id = "1mD5VjHz5zO4Ou3sS7H4BDrIvJ-gQIo8m"
+url = f"https://drive.google.com/uc?id={file_id}"
+output = "grant_combined.csv"
+gdown.download(url, output, quiet=False)
 
 st.set_page_config(
     page_title="Federal Spending Transparency Dashboard",
@@ -31,11 +37,11 @@ st.markdown(
 )
 
 # Load the dataset
-data_path = '/Users/sarvagya/Developer/agaDatathon2/grant_combined.csv'
+#data_path = '/Users/sarvagya/Developer/agaDatathon2/grant_combined.csv'
 
 
 @st.cache_data
-def load_data(data_path):
+def load_data():
     """Loads the dataset with necessary columns for key metrics."""
     selected_columns = [
         "total_obligated_amount",
@@ -48,11 +54,11 @@ def load_data(data_path):
         "recipient_state_name",
         "awarding_sub_agency_name"
     ]
-    return pd.read_csv(data_path, usecols=selected_columns, low_memory=False)
+    return pd.read_csv(output, usecols=selected_columns, low_memory=False)
 
 
 # Load dataset with selected columns
-dataset = load_data(data_path)
+dataset = load_data()
 
 # Calculate Metrics
 total_grants = dataset["assistance_award_unique_key"].nunique()

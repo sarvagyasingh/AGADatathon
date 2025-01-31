@@ -1,0 +1,5 @@
+pandas
+inflect
+plotly.express
+plotly.graph_objects
+gdown
