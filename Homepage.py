@@ -30,10 +30,11 @@ st.markdown(
             font-weight: bold;
             border-radius: 5px;
             width: 100%;
-            position: sticky;
-            top: 0;
+            position: relative;  /* Ensures it's within content flow */
+            top: 10px; /* Pushes it down slightly */
             z-index: 999;
             margin-bottom: 10px;
+            margin-top: 60px;  /* Creates space below the Streamlit nav bar */
         }
     }
 
