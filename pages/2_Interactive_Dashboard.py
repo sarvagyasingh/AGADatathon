@@ -95,7 +95,7 @@ st.metric("Total Recipients Analyzed", f"{total_recipients:,}")
 st.subheader("📅 Date Range of Grants Data")
 st.markdown(f"📆 **From:** {date_range_start} **to:** {date_range_end}")
 
-st.subheader("📊 Anomaly Visualizer")
+st.subheader("📊 Visualizer")
 
 # Vlad's Viz Supporter
 obligated_negatives = dataset[dataset["total_obligated_amount"] < 0]

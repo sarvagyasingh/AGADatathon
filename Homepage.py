@@ -19,7 +19,30 @@ st.markdown(
         padding-left: 2rem;
         padding-right: 2rem;
     }
+
+    @media screen and (max-width: 768px) {
+        .mobile-notice {
+            display: block;
+            background-color: #ffcc00;
+            color: black;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+    }
+
+    @media screen and (min-width: 769px) {
+        .mobile-notice {
+            display: none;
+        }
+    }
     </style>
+
+    <div class="mobile-notice">
+        📱 For a better experience, please rotate your device to landscape mode!
+    </div>
     """,
     unsafe_allow_html=True
 )
