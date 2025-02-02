@@ -29,7 +29,11 @@ st.markdown(
             padding: 10px;
             font-weight: bold;
             border-radius: 5px;
-            margin-bottom: 10px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
     }
 
@@ -37,6 +41,10 @@ st.markdown(
         .mobile-notice {
             display: none;
         }
+    }
+
+    .stApp {
+        margin-top: 50px; /* Push content down to avoid overlap */
     }
     </style>
 
