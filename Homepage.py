@@ -30,10 +30,10 @@ st.markdown(
             font-weight: bold;
             border-radius: 5px;
             width: 100%;
-            position: fixed;
+            position: sticky;
             top: 0;
-            left: 0;
-            z-index: 1000;
+            z-index: 999;
+            margin-bottom: 10px;
         }
     }
 
@@ -41,10 +41,6 @@ st.markdown(
         .mobile-notice {
             display: none;
         }
-    }
-
-    .stApp {
-        margin-top: 50px; /* Push content down to avoid overlap */
     }
     </style>
 
