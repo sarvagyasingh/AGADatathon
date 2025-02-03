@@ -4,7 +4,6 @@ import inflect
 import plotly.express as px
 import plotly.graph_objects as go
 
-# Initialize inflect engine for number-to-word conversion
 p = inflect.engine()
 
 st.set_page_config(
@@ -30,36 +29,12 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Load the dataset
-# data_path = '/Users/sarvagya/Developer/agaDatathon2/grant_combined.csv'
-
-
+# Dataset Loading
 if "dataset" in st.session_state and st.session_state["dataset_loaded"]:
     dataset = st.session_state["dataset"]
 else:
     st.warning("Dataset is still loading, please wait...")
     st.stop()
-
-# Calculate Metrics
-total_grants = dataset["assistance_award_unique_key"].nunique()
-total_agencies = dataset["awarding_agency_name"].nunique()
-total_recipients = dataset["recipient_name"].nunique()  # New metric
-
-# Hardcoded Date Range
-date_range_start = "2023-01-01"
-date_range_end = "2023-12-31"
-
-
-# Convert large numbers into words (abbreviations)
-# def number_to_abbreviation(amount):
-#     if amount >= 1_000_000_000:  # Billions
-#         return f"{amount / 1_000_000_000:.2f}B"
-#     elif amount >= 1_000_000:  # Millions
-#         return f"{amount / 1_000_000:.2f}M"
-#     elif amount >= 1_000:  # Thousands
-#         return f"{amount / 1_000:.2f}K"
-#     else:
-#         return f"{amount:,.2f}"
 
 def number_to_abbreviation(amount):
     print(amount)
@@ -74,14 +49,21 @@ def number_to_abbreviation(amount):
     else:
         return f"{amount:,.2f}"
 
-
-# Get numeric values
-total_obligated_amount = dataset["total_obligated_amount"].sum()
-total_outlayed_amount = dataset["total_outlayed_amount"].sum()
+# Key Metrics Section 📌
+metrics = dataset.agg({
+    "assistance_award_unique_key": "nunique",
+    "awarding_agency_name": "nunique",
+    "recipient_name": "nunique",
+    "total_obligated_amount": "sum",
+    "total_outlayed_amount": "sum"
+})
 
 # Convert to abbreviated format
-total_obligated_abbr = number_to_abbreviation(total_obligated_amount)
-total_outlayed_abbr = number_to_abbreviation(total_outlayed_amount)
+total_obligated_abbr = number_to_abbreviation(metrics["total_obligated_amount"])
+total_outlayed_abbr = number_to_abbreviation(metrics["total_outlayed_amount"])
+
+# Hardcoded Date Range
+date_range = "📆 **From:** 2023-01-01 **to:** 2023-12-31"
 
 # Page Title
 st.title("📊 Grants Data Dashboard")
@@ -90,27 +72,48 @@ st.markdown("A detailed interactive dashboard to explore US government grant dat
 # **Key Metrics Section**
 st.subheader("📌 Key Metrics")
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     st.metric("Total Obligated Amount", f"${total_obligated_abbr}")
-    st.metric("Total Grants Analyzed", f"{total_grants:,}")
+    st.metric("Total Grants Analyzed", f"{metrics['assistance_award_unique_key']:,}")
 
 with col2:
     st.metric("Total Outlayed Amount", f"${total_outlayed_abbr}")
-    st.metric("Total Agencies Analyzed", f"{total_agencies:,}")
+    st.metric("Total Agencies Analyzed", f"{metrics['awarding_agency_name']:,}")
 
-# **Additional Metric: Total Recipients**
-st.metric("Total Recipients Analyzed", f"{total_recipients:,}")
+with col3:
+    st.metric("Total Recipients Analyzed", f"{metrics['recipient_name']:,}")
+    st.metric("Year Analyzed", "2023")
 
-# **Date Range**
-st.subheader("📅 Date Range of Grants Data")
-st.markdown(f"📆 **From:** {date_range_start} **to:** {date_range_end}")
+# Top 5 agencies
+# Compute top 5 agencies by total outlayed amount
+top_5_agencies = (
+    dataset.groupby('awarding_agency_name')['total_outlayed_amount']
+    .sum()
+    .nlargest(5)
+    .reset_index()
+)
 
-# Top 5 agencie
-top_5_agencies = dataset.groupby('awarding_agency_name')['total_outlayed_amount'].sum().nlargest(5)
-st.subheader("Top 5 Agencies by Total Outlayed Amount")
-top_5_agencies
+top_5_agencies["formatted_outlayed"] = top_5_agencies["total_outlayed_amount"].apply(number_to_abbreviation)
+
+# Visualization
+st.subheader("🏛️ Top 5 Agencies by Total Outlayed Amount")
+
+fig = px.bar(
+    top_5_agencies,
+    x="total_outlayed_amount",
+    y="awarding_agency_name",
+    orientation="h",
+    text=top_5_agencies["formatted_outlayed"],  # Use formatted values
+    labels={"awarding_agency_name": "Agency", "total_outlayed_amount": "Total Outlayed Amount ($)"}
+)
+
+# Improve layout
+fig.update_traces(marker_color="steelblue", textposition="outside")
+fig.update_layout(yaxis_categoryorder="total ascending", height=400)
+
+st.plotly_chart(fig, use_container_width=True)
 
 split_columns = dataset['prime_award_summary_place_of_performance_cd_original'].str.split('-', n=1, expand=True)
 split_columns = split_columns.rename(
@@ -118,7 +121,15 @@ split_columns = split_columns.rename(
 dataset = pd.concat([dataset, split_columns], axis=1)
 dataset['obligation_utilization_ratio'] = (dataset['total_outlayed_amount'] / dataset['total_obligated_amount'])
 
-st.subheader("📊 Anomaly Visualizer")
+# Add a subtle horizontal line
+st.markdown(
+    """<hr style="border: 0.5px solid #ddd; margin: 20px 0;">""",
+    unsafe_allow_html=True
+)
+
+agency_input = st.selectbox("**Select an awarding agency:**", dataset["awarding_agency_name"].unique(), key="agency_select")
+
+st.subheader("📊 Visualizer")
 
 # Vlad's Viz Supporter
 obligated_negatives = dataset[dataset["total_obligated_amount"] < 0]
@@ -140,7 +151,6 @@ def plot_subagency_funding_histogram(agency_name, data):
     """
     Creates an interactive Plotly bar chart showing the deviation of
     sub-agency funding from the agency's average funding.
-    Displays the agency average amount above the graph.
 
     Parameters:
         agency_name (str): Name of the awarding agency to filter.
@@ -149,10 +159,35 @@ def plot_subagency_funding_histogram(agency_name, data):
 
     # Filter for the selected agency
     agency_data = data[data["awarding_agency_name"] == agency_name]
+    print(f"Length {len(agency_data)}")
 
     if agency_data.empty:
         st.warning(f"No sub-agency data found for '{agency_name}'.")
         return
+
+    total_counts = len(agency_data)
+
+    # Compute statistics
+    total_obligated = agency_data['total_obligated_amount'].sum()
+    total_obligated_abbr = number_to_abbreviation(total_obligated)
+    total_outlayed = agency_data['total_outlayed_amount'].sum()
+    total_outlayed_abbr = number_to_abbreviation(total_outlayed)
+    nan_obligated = agency_data["total_obligated_amount"].isna().sum() / total_counts
+    nan_outlayed = agency_data["total_outlayed_amount"].isna().sum() / total_counts
+    total_recipients_served = agency_data["recipient_name"].nunique()
+
+    # Display stats in Streamlit
+    st.markdown(f"### 📌 Key Metrics")
+
+    col1, col2 = st.columns(2)
+
+    col1.metric("Total Awards", f"{total_counts:,}")
+    col2.metric("Unique Recipients Served", f"{total_recipients_served:,}")
+
+    col3, col4 = st.columns(2)
+
+    col3.metric("Total Obligated Amount", f"${total_obligated_abbr}")
+    col4.metric("Total Outlayed Amount", f"${total_outlayed_abbr}")
 
     # Group by sub-agency and calculate the average funding
     subagency_funding = agency_data.groupby("awarding_sub_agency_name")["total_funding_amount"].mean().reset_index()
@@ -177,45 +212,43 @@ def plot_subagency_funding_histogram(agency_name, data):
     # **Green Bars (Above Avg)**
     fig.add_trace(go.Bar(
         x=positive_deviation["awarding_sub_agency_name"],
-        y=positive_deviation["Funding Deviation"],  # Deviation values only
-        text=[f"${val:,.0f}" for val in positive_deviation["Funding Deviation"]],
+        y=positive_deviation["Funding Deviation"],
+        text=[f"${val:,.0f}" for val in positive_deviation["Average Funding Given"]],
         textposition="outside",
         marker=dict(color="green"),
-        name="Above Agency Average"
+        name="Above Agency Average"  # ✅ Separate legend entry
     ))
 
     # **Red Bars (Below Avg)**
     fig.add_trace(go.Bar(
         x=negative_deviation["awarding_sub_agency_name"],
-        y=negative_deviation["Funding Deviation"],  # Negative values will go below the axis
-        text=[f"${val:,.0f}" for val in negative_deviation["Funding Deviation"]],
+        y=negative_deviation["Funding Deviation"],
+        text=[f"${val:,.0f}" for val in negative_deviation["Average Funding Given"]],
         textposition="outside",
         marker=dict(color="red"),
-        name="Below Agency Average"
+        name="Below Agency Average"  # ✅ Separate legend entry
     ))
 
-    # Add an annotation to display the agency average above the graph
-    fig.add_annotation(
-        xref="paper", yref="paper",
-        x=0.5, y=1.1,  # Position slightly above the chart
-        text=f"📌 Agency Average Funding: ${global_avg_funding:,.2f}",
-        showarrow=False,
-        font=dict(size=14, color="black"),
-        align="center",
-        bgcolor="lightgray",
-        bordercolor="black",
-        borderwidth=1,
-        borderpad=5
+    # Add a horizontal line for the global average funding
+    fig.add_shape(
+        type="line",
+        x0=0,
+        x1=1,
+        y0=0,
+        y1=0,
+        xref="paper",
+        yref="y",
+        line=dict(color="black", width=2, dash="dash"),
     )
 
     # Layout & Styling
     fig.update_layout(
         title=f"📊 Funding Deviation of Sub-Agencies in {agency_name}",
         xaxis_title="Sub-Agency",
-        yaxis_title="Deviation from Agency Average ($)",
+        yaxis_title="Deviation from Agency Average",
         xaxis_tickangle=-45,
         showlegend=True,
-        margin=dict(l=40, r=40, t=60, b=80),
+        margin=dict(l=40, r=40, t=40, b=80),
         height=600
     )
 
@@ -223,8 +256,6 @@ def plot_subagency_funding_histogram(agency_name, data):
     st.plotly_chart(fig, use_container_width=True)
 
 
-# Example usage inside Streamlit
-agency_input = st.selectbox("Select an awarding agency:", dataset["awarding_agency_name"].unique(), key="agency_select")
 plot_subagency_funding_histogram(agency_input, dataset)
 
 
