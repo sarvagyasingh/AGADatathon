@@ -3,8 +3,6 @@ import pandas as pd
 import inflect
 import plotly.express as px
 import plotly.graph_objects as go
-import gdown
-import matplotlib.pyplot as plt
 
 # Initialize inflect engine for number-to-word conversion
 p = inflect.engine()
@@ -481,3 +479,72 @@ def plot_total_vs_anomalous_grants(df, agency_name):
 
 # 📊 Call the function using the existing dropdown
 plot_total_vs_anomalous_grants(dataset, agency_input)
+
+#Vlad's viz
+# Step 1: Filter for awarding agencies with at least 10 instances
+eligible_agencies = dataset["awarding_agency_name"].value_counts()
+eligible_agencies = eligible_agencies[eligible_agencies >= 10].index
+
+filtered_df = dataset[dataset["awarding_agency_name"].isin(eligible_agencies)]
+def plot_award_distribution(agency_name):
+    """
+    Generates a Plotly bar chart showing the distribution of awards by month for the selected agency.
+
+    Parameters:
+        agency_name (str): The selected awarding agency.
+
+    Returns:
+        Displays a bar chart in Streamlit.
+    """
+
+    # Filter data for the selected agency
+    agency_data = filtered_df[filtered_df["awarding_agency_name"] == agency_name]
+
+    if agency_data.empty:
+        st.warning(f"No data found for '{agency_name}'.")
+        return
+
+    # Convert award_base_action_date to datetime if not already
+    agency_data["award_base_action_date"] = pd.to_datetime(agency_data["award_base_action_date"], errors='coerce')
+
+    # Drop rows with invalid dates
+    agency_data = agency_data.dropna(subset=["award_base_action_date"])
+
+    # Extract month from the date
+    agency_data["award_month"] = agency_data["award_base_action_date"].dt.month
+
+    # Count occurrences per month
+    month_counts = agency_data["award_month"].value_counts().reindex(range(1, 13), fill_value=0).reset_index()
+    month_counts.columns = ["Month", "Number of Awards"]
+
+    # Define month labels
+    month_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    month_counts["Month"] = month_counts["Month"].apply(lambda x: month_labels[x - 1])
+
+    # Create Plotly bar chart
+    fig = px.bar(
+        month_counts,
+        x="Month",
+        y="Number of Awards",
+        title=f"📅 Award Distribution by Month for {agency_name}",
+        labels={"Month": "Month", "Number of Awards": "Number of Awards"},
+        text_auto=True,
+        color_discrete_sequence=["#1f77b4"],  # Match dashboard theme
+    )
+
+    # Update layout for consistency
+    fig.update_layout(
+        xaxis_title="Month",
+        yaxis_title="Number of Awards",
+        margin={"r": 40, "t": 40, "l": 40, "b": 60},
+        height=500
+    )
+
+    # Display in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+
+
+# 📊 Call the function using the existing dropdown
+# st.subheader("📆 Award Distribution Over Months")
+plot_award_distribution(agency_input)
