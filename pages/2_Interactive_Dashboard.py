@@ -140,6 +140,7 @@ def plot_subagency_funding_histogram(agency_name, data):
     """
     Creates an interactive Plotly bar chart showing the deviation of
     sub-agency funding from the agency's average funding.
+    Displays the agency average amount above the graph.
 
     Parameters:
         agency_name (str): Name of the awarding agency to filter.
@@ -148,35 +149,10 @@ def plot_subagency_funding_histogram(agency_name, data):
 
     # Filter for the selected agency
     agency_data = data[data["awarding_agency_name"] == agency_name]
-    print(f"Length {len(agency_data)}")
 
     if agency_data.empty:
         st.warning(f"No sub-agency data found for '{agency_name}'.")
         return
-
-    total_counts = len(agency_data)
-
-    # Compute statistics
-    total_obligated = agency_data['total_obligated_amount'].sum()
-    total_obligated_abbr = number_to_abbreviation(total_obligated)
-    total_outlayed = agency_data['total_outlayed_amount'].sum()
-    total_outlayed_abbr = number_to_abbreviation(total_outlayed)
-    nan_obligated = agency_data["total_obligated_amount"].isna().sum() / total_counts
-    nan_outlayed = agency_data["total_outlayed_amount"].isna().sum() / total_counts
-    total_recipients_served = agency_data["recipient_name"].nunique()
-
-    # Display stats in Streamlit
-    st.markdown(f"### 📌 Key Metrics")
-
-    col1, col2 = st.columns(2)
-
-    col1.metric("Total Awards", f"{total_counts:,}")
-    col2.metric("Unique Recipients Served", f"{total_recipients_served:,}")
-
-    col3, col4 = st.columns(2)
-
-    col3.metric("Total Obligated Amount", f"${total_obligated_abbr}")
-    col4.metric("Total Outlayed Amount", f"${total_outlayed_abbr}")
 
     # Group by sub-agency and calculate the average funding
     subagency_funding = agency_data.groupby("awarding_sub_agency_name")["total_funding_amount"].mean().reset_index()
@@ -201,43 +177,45 @@ def plot_subagency_funding_histogram(agency_name, data):
     # **Green Bars (Above Avg)**
     fig.add_trace(go.Bar(
         x=positive_deviation["awarding_sub_agency_name"],
-        y=positive_deviation["Funding Deviation"],
-        text=[f"${val:,.0f}" for val in positive_deviation["Average Funding Given"]],
+        y=positive_deviation["Funding Deviation"],  # Deviation values only
+        text=[f"${val:,.0f}" for val in positive_deviation["Funding Deviation"]],
         textposition="outside",
         marker=dict(color="green"),
-        name="Above Agency Average"  # ✅ Separate legend entry
+        name="Above Agency Average"
     ))
 
     # **Red Bars (Below Avg)**
     fig.add_trace(go.Bar(
         x=negative_deviation["awarding_sub_agency_name"],
-        y=negative_deviation["Funding Deviation"],
-        text=[f"${val:,.0f}" for val in negative_deviation["Average Funding Given"]],
+        y=negative_deviation["Funding Deviation"],  # Negative values will go below the axis
+        text=[f"${val:,.0f}" for val in negative_deviation["Funding Deviation"]],
         textposition="outside",
         marker=dict(color="red"),
-        name="Below Agency Average"  # ✅ Separate legend entry
+        name="Below Agency Average"
     ))
 
-    # Add a horizontal line for the global average funding
-    fig.add_shape(
-        type="line",
-        x0=0,
-        x1=1,
-        y0=0,
-        y1=0,
-        xref="paper",
-        yref="y",
-        line=dict(color="black", width=2, dash="dash"),
+    # Add an annotation to display the agency average above the graph
+    fig.add_annotation(
+        xref="paper", yref="paper",
+        x=0.5, y=1.1,  # Position slightly above the chart
+        text=f"📌 Agency Average Funding: ${global_avg_funding:,.2f}",
+        showarrow=False,
+        font=dict(size=14, color="black"),
+        align="center",
+        bgcolor="lightgray",
+        bordercolor="black",
+        borderwidth=1,
+        borderpad=5
     )
 
     # Layout & Styling
     fig.update_layout(
         title=f"📊 Funding Deviation of Sub-Agencies in {agency_name}",
         xaxis_title="Sub-Agency",
-        yaxis_title="Deviation from Agency Average",
+        yaxis_title="Deviation from Agency Average ($)",
         xaxis_tickangle=-45,
         showlegend=True,
-        margin=dict(l=40, r=40, t=40, b=80),
+        margin=dict(l=40, r=40, t=60, b=80),
         height=600
     )
 
