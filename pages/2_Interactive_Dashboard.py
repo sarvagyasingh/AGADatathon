@@ -37,17 +37,19 @@ else:
     st.stop()
 
 def number_to_abbreviation(amount):
-    print(amount)
+    # print(amount)
     amount = float(amount)  # Ensure amount is numeric
 
-    if amount >= 1_000_000_000:  # Billions
-        return f"{amount / 1_000_000_000:.2f}B"
+    if amount >= 1_000_000_000_000:  # Trillions
+        return f"{amount / 1_000_000_000_000:.1f}T"
+    elif amount >= 1_000_000_000:  # Billions
+        return f"{amount / 1_000_000_000:.1f}B"
     elif amount >= 1_000_000:  # Millions
-        return f"{amount / 1_000_000:.2f}M"
+        return f"{amount / 1_000_000:.1f}M"
     elif amount >= 1_000:  # Thousands
-        return f"{amount / 1_000:.2f}K"
+        return f"{amount / 1_000:.1f}K"
     else:
-        return f"{amount:,.2f}"
+        return f"{amount:,.1f}"  # Ensures one decimal place
 
 # Key Metrics Section 📌
 metrics = dataset.agg({
@@ -95,7 +97,8 @@ top_5_agencies = (
     .reset_index()
 )
 
-top_5_agencies["formatted_outlayed"] = top_5_agencies["total_outlayed_amount"].apply(number_to_abbreviation)
+top_5_agencies = dataset.groupby('awarding_agency_name')['total_outlayed_amount'].sum().nlargest(5).reset_index()
+top_5_agencies["formatted_outlayed_amount"] = top_5_agencies["total_outlayed_amount"].apply(number_to_abbreviation)
 
 # Visualization
 st.subheader("🏛️ Top 5 Agencies by Total Outlayed Amount")
@@ -105,7 +108,7 @@ fig = px.bar(
     x="total_outlayed_amount",
     y="awarding_agency_name",
     orientation="h",
-    text=top_5_agencies["formatted_outlayed"],  # Use formatted values
+    text=top_5_agencies["formatted_outlayed_amount"],  # Use formatted values
     labels={"awarding_agency_name": "Agency", "total_outlayed_amount": "Total Outlayed Amount ($)"}
 )
 
@@ -210,23 +213,25 @@ def plot_subagency_funding_histogram(agency_name, data):
     fig = go.Figure()
 
     # **Green Bars (Above Avg)**
+    # **Green Bars (Above Avg)**
     fig.add_trace(go.Bar(
         x=positive_deviation["awarding_sub_agency_name"],
         y=positive_deviation["Funding Deviation"],
-        text=[f"${val:,.0f}" for val in positive_deviation["Average Funding Given"]],
+        text=[number_to_abbreviation(val) for val in positive_deviation["Funding Deviation"]],  # ✅ Apply formatting
         textposition="outside",
         marker=dict(color="green"),
-        name="Above Agency Average"  # ✅ Separate legend entry
+        name="Above Agency Average"
     ))
 
     # **Red Bars (Below Avg)**
     fig.add_trace(go.Bar(
         x=negative_deviation["awarding_sub_agency_name"],
         y=negative_deviation["Funding Deviation"],
-        text=[f"${val:,.0f}" for val in negative_deviation["Average Funding Given"]],
+        text=[number_to_abbreviation(abs(val)) for val in negative_deviation["Funding Deviation"]],
+        # ✅ Ensure proper formatting
         textposition="outside",
         marker=dict(color="red"),
-        name="Below Agency Average"  # ✅ Separate legend entry
+        name="Below Agency Average"
     ))
 
     # Add a horizontal line for the global average funding
@@ -248,11 +253,17 @@ def plot_subagency_funding_histogram(agency_name, data):
         yaxis_title="Deviation from Agency Average",
         xaxis_tickangle=-45,
         showlegend=True,
-        margin=dict(l=40, r=40, t=40, b=80),
-        height=600
+        margin=dict(l=100, r=100, t=120, b=180),  # 🔼 Increased margins to avoid cut-off
+        height=700  # 🔼 Increased height for better spacing
     )
 
-    # Display the chart in Streamlit
+    # # Display the title using Markdown
+    # st.markdown(f"### 📊 Funding Deviation of Sub-Agencies in {agency_name}")
+
+    # Display the agency average funding as a separate section above the graph
+    st.markdown(f"**📌 Agency Average Funding: ${number_to_abbreviation(global_avg_funding)}**")
+
+    # Now display the figure
     st.plotly_chart(fig, use_container_width=True)
 
 
