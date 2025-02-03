@@ -108,7 +108,10 @@ if "dataset" not in st.session_state:
             'recipient_state_name',
             'recipient_state_code',
             'period_of_performance_start_date',
-            'period_of_performance_current_end_date'
+            'period_of_performance_current_end_date',
+            'prime_award_summary_place_of_performance_cd_original',
+            'primary_place_of_performance_state_name',
+            'cfda_numbers_and_titles'
         ]
         return pd.read_csv(output, usecols=selected_columns, low_memory=False)
 

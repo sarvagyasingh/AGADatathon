@@ -4,6 +4,7 @@ import inflect
 import plotly.express as px
 import plotly.graph_objects as go
 import gdown
+import matplotlib.pyplot as plt
 
 # Initialize inflect engine for number-to-word conversion
 p = inflect.engine()
@@ -32,7 +33,7 @@ st.markdown(
 )
 
 # Load the dataset
-#data_path = '/Users/sarvagya/Developer/agaDatathon2/grant_combined.csv'
+# data_path = '/Users/sarvagya/Developer/agaDatathon2/grant_combined.csv'
 
 
 if "dataset" in st.session_state and st.session_state["dataset_loaded"]:
@@ -52,7 +53,20 @@ date_range_end = "2023-12-31"
 
 
 # Convert large numbers into words (abbreviations)
+# def number_to_abbreviation(amount):
+#     if amount >= 1_000_000_000:  # Billions
+#         return f"{amount / 1_000_000_000:.2f}B"
+#     elif amount >= 1_000_000:  # Millions
+#         return f"{amount / 1_000_000:.2f}M"
+#     elif amount >= 1_000:  # Thousands
+#         return f"{amount / 1_000:.2f}K"
+#     else:
+#         return f"{amount:,.2f}"
+
 def number_to_abbreviation(amount):
+    print(amount)
+    amount = float(amount)  # Ensure amount is numeric
+
     if amount >= 1_000_000_000:  # Billions
         return f"{amount / 1_000_000_000:.2f}B"
     elif amount >= 1_000_000:  # Millions
@@ -95,7 +109,18 @@ st.metric("Total Recipients Analyzed", f"{total_recipients:,}")
 st.subheader("📅 Date Range of Grants Data")
 st.markdown(f"📆 **From:** {date_range_start} **to:** {date_range_end}")
 
-st.subheader("📊 Visualizer")
+# Top 5 agencie
+top_5_agencies = dataset.groupby('awarding_agency_name')['total_outlayed_amount'].sum().nlargest(5)
+st.subheader("Top 5 Agencies by Total Outlayed Amount")
+top_5_agencies
+
+split_columns = dataset['prime_award_summary_place_of_performance_cd_original'].str.split('-', n=1, expand=True)
+split_columns = split_columns.rename(
+    columns={0: 'place_of_performance_state_code', 1: 'place_of_performance_state_code_not_needed'})
+dataset = pd.concat([dataset, split_columns], axis=1)
+dataset['obligation_utilization_ratio'] = (dataset['total_outlayed_amount'] / dataset['total_obligated_amount'])
+
+st.subheader("📊 Anomaly Visualizer")
 
 # Vlad's Viz Supporter
 obligated_negatives = dataset[dataset["total_obligated_amount"] < 0]
@@ -111,7 +136,8 @@ outlay_extremes['awarding_sub_agency_name'].value_counts()
 funding_negatives['awarding_sub_agency_name'].value_counts()
 funding_extremes['awarding_sub_agency_name'].value_counts()
 
-#Viz 1
+
+# Viz 1
 def plot_subagency_funding_histogram(agency_name, data):
     """
     Creates an interactive Plotly bar chart showing the deviation of
@@ -124,10 +150,35 @@ def plot_subagency_funding_histogram(agency_name, data):
 
     # Filter for the selected agency
     agency_data = data[data["awarding_agency_name"] == agency_name]
+    print(f"Length {len(agency_data)}")
 
     if agency_data.empty:
         st.warning(f"No sub-agency data found for '{agency_name}'.")
         return
+
+    total_counts = len(agency_data)
+
+    # Compute statistics
+    total_obligated = agency_data['total_obligated_amount'].sum()
+    total_obligated_abbr = number_to_abbreviation(total_obligated)
+    total_outlayed = agency_data['total_outlayed_amount'].sum()
+    total_outlayed_abbr = number_to_abbreviation(total_outlayed)
+    nan_obligated = agency_data["total_obligated_amount"].isna().sum() / total_counts
+    nan_outlayed = agency_data["total_outlayed_amount"].isna().sum() / total_counts
+    total_recipients_served = agency_data["recipient_name"].nunique()
+
+    # Display stats in Streamlit
+    st.markdown(f"### 📌 Key Metrics")
+
+    col1, col2 = st.columns(2)
+
+    col1.metric("Total Awards", f"{total_counts:,}")
+    col2.metric("Unique Recipients Served", f"{total_recipients_served:,}")
+
+    col3, col4 = st.columns(2)
+
+    col3.metric("Total Obligated Amount", f"${total_obligated_abbr}")
+    col4.metric("Total Outlayed Amount", f"${total_outlayed_abbr}")
 
     # Group by sub-agency and calculate the average funding
     subagency_funding = agency_data.groupby("awarding_sub_agency_name")["total_funding_amount"].mean().reset_index()
@@ -196,10 +247,10 @@ def plot_subagency_funding_histogram(agency_name, data):
     st.plotly_chart(fig, use_container_width=True)
 
 
-
 # Example usage inside Streamlit
 agency_input = st.selectbox("Select an awarding agency:", dataset["awarding_agency_name"].unique(), key="agency_select")
 plot_subagency_funding_histogram(agency_input, dataset)
+
 
 def plot_agency_funding_by_state(df, agency_name):
     """
@@ -240,14 +291,47 @@ def plot_agency_funding_by_state(df, agency_name):
 
     # Adjust map appearance
     fig.update_geos(fitbounds="locations", visible=False)
-    fig.update_layout(margin={"r":0,"t":40,"l":0,"b":0})
+    fig.update_layout(margin={"r": 0, "t": 40, "l": 0, "b": 0})
 
     # Display the figure in Streamlit
     st.plotly_chart(fig, use_container_width=True)
 
 
+def outlayed_amount_per_state(df, agency_name):
+    agency_data = df[df["awarding_agency_name"] == agency_name]
+
+    state_outlayed_amount = agency_data.groupby(
+        ['place_of_performance_state_code', 'primary_place_of_performance_state_name']
+    )["total_outlayed_amount"].sum().reset_index()
+
+    # Create choropleth map
+    fig = px.choropleth(
+        state_outlayed_amount,
+        locations='place_of_performance_state_code',
+        locationmode='USA-states',
+        color='total_outlayed_amount',
+        hover_name='primary_place_of_performance_state_name',
+        color_continuous_scale="Magma",
+        scope="usa",
+        title="📍 Total Outlayed Amount Per State ($)"
+    )
+
+    # Center the map properly
+    fig.update_geos(fitbounds="locations", visible=False)
+    fig.update_layout(
+        margin={"r": 0, "t": 50, "l": 0, "b": 0},  # Adjust top margin for title
+        geo=dict(center={"lat": 37.0902, "lon": -95.7129}, projection_scale=1)  # Center on USA
+    )
+
+    # Display in Streamlit
+    st.plotly_chart(fig, use_container_width=True)  # Makes it responsive and centered
+
+
+outlayed_amount_per_state(dataset, agency_input)
+
 # 🏛️ Use Existing Dropdown to Control This Visualization
 plot_agency_funding_by_state(dataset, agency_input)
+
 
 def plot_subagency_obligated_vs_outlayed(df, agency_name):
     """
@@ -279,12 +363,14 @@ def plot_subagency_obligated_vs_outlayed(df, agency_name):
         st.warning(f"No funding data available for sub-agencies under '{agency_name}'.")
         return
 
+    top_10_sub_agencies = subagency_funding.nlargest(10, "total_obligated_amount")
+
     # Create grouped bar chart
     fig = px.bar(
-        subagency_funding.melt(id_vars="awarding_sub_agency_name",
-                               value_vars=["total_obligated_amount", "total_outlayed_amount"],
-                               var_name="Funding Type",
-                               value_name="Amount"),
+        top_10_sub_agencies.melt(id_vars="awarding_sub_agency_name",
+                                 value_vars=["total_obligated_amount", "total_outlayed_amount"],
+                                 var_name="Funding Type",
+                                 value_name="Amount"),
         x="awarding_sub_agency_name",
         y="Amount",
         color="Funding Type",
@@ -309,6 +395,40 @@ def plot_subagency_obligated_vs_outlayed(df, agency_name):
 
 # 📊 Call the function using the existing dropdown
 plot_subagency_obligated_vs_outlayed(dataset, agency_input)
+
+
+def obligation_ratio_plot(df, agency_name):
+    agency_data = df[df["awarding_agency_name"] == agency_name]
+    # Define bins and labels
+    bins = [-float("inf"), -1, -0.5, 0, 0.5, 1, float("inf")]
+    labels = ["< -1", "-1 to -0.5", "-0.5 to 0", "0 to 0.5", "0.5 to 1", "> 1"]
+
+    # Categorize obligation utilization ratio
+    agency_data["obligation_utilization_category"] = pd.cut(
+        agency_data["obligation_utilization_ratio"], bins=bins, labels=labels
+    )
+
+    # Count values for each category
+    category_counts = agency_data["obligation_utilization_category"].value_counts().reindex(labels, fill_value=0)
+    category_counts_df = category_counts.reset_index()
+    category_counts_df.columns = ["Category", "Count"]
+
+    # Create Plotly bar chart
+    fig = px.bar(
+        category_counts_df,
+        x="Category",
+        y="Count",
+        title="⚠️ Distribution of Obligation Utilization Ratio Categories",
+        labels={"Category": "Obligation Utilization Ratio Range", "Count": "Number of Grants"},
+        text_auto=True
+    )
+
+    # Display in Streamlit
+    st.plotly_chart(fig)
+
+
+obligation_ratio_plot(dataset, agency_input)
+
 
 def plot_total_vs_anomalous_grants(df, agency_name):
     """
@@ -336,7 +456,7 @@ def plot_total_vs_anomalous_grants(df, agency_name):
     anomalies = agency_data[
         (agency_data["period_of_performance_start_date"] < agency_data["award_base_action_date"]) |
         (agency_data["award_base_action_date"] > agency_data["period_of_performance_current_end_date"])
-    ]
+        ]
 
     anomalies_filtered_counts = len(anomalies)
 
