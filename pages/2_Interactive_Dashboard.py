@@ -199,6 +199,28 @@ def plot_subagency_funding_histogram(agency_name, data):
     # Calculate global average funding for the agency
     global_avg_funding = subagency_funding["Average Funding Given"].mean()
 
+    if subagency_funding.shape[0] == 1:
+        st.markdown(f"### 📊 Funding Deviation of Sub-Agencies in {agency_name}")
+        st.markdown(f"**📌 Agency Average Funding: ${number_to_abbreviation(global_avg_funding)}**")
+        st.markdown(
+            f"""
+            <div style="
+                background-color: #d4edda;
+                color: #155724;
+                padding: 10px;
+                border-radius: 5px;
+                border: 1px solid #c3e6cb;
+                font-weight: bold;
+                ">
+                '{agency_name}' has no distinct sub-agencies for comparison. The deviation graph is not applicable.
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        return
+
+
+
     # Calculate deviations from the global agency average
     subagency_funding["Funding Deviation"] = subagency_funding["Average Funding Given"] - global_avg_funding
 
