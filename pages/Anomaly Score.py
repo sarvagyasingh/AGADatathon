@@ -114,7 +114,7 @@ score_df_display = score_df[["Agency", "Transparency Score", "Anomaly Ratio"]]
 # Display scores
 st.subheader("📊 Agency Transparency Scores")
 
-st.write(score_df_display.sort_values(by="Transparency Score", ascending=True))
+st.write(score_df_display.sort_values(by="Transparency Score", ascending=True).reset_index(drop=True))
 
 # **Visualization: Agencies by Anomaly Score**
 st.subheader("📉 Transparency Score by Agency")
