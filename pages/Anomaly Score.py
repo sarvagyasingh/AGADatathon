@@ -67,8 +67,8 @@ def calculate_smb_transparency_score(df, agency_name):
         "Duplicate Awards": (agency_df.duplicated(subset=["assistance_award_unique_key", "award_id_fain", "award_id_uri"]).sum(), 0.3),
         "Negative/Extreme Values": (((agency_df["total_obligated_amount"] < 0) | (agency_df["total_obligated_amount"] > 1_000_000_000)).sum(), 0.3),
         # "Timing Issues": ((agency_df["award_base_action_date"] > agency_df["award_latest_action_date"]).sum(), 0.3),
-        "timing_issues": ((time_anomalies.shape[0]), 0.05),
-        "obligation_ratio_issues": ((obligation_ratio_anomalies.shape[0]), 0.2),
+        "Timing Issues": ((time_anomalies.shape[0]), 0.05),
+        "Obligation Ratio Issues": ((obligation_ratio_anomalies.shape[0]), 0.2),
         "Funding Mismatch": ((agency_df["total_funding_amount"] < agency_df["total_obligated_amount"]).sum(), 0.3),
         "Payment Accuracy Issues": ((agency_df["total_outlayed_amount"] > agency_df["total_obligated_amount"]).sum(), 0.3)
     }
@@ -88,7 +88,7 @@ def calculate_smb_transparency_score(df, agency_name):
     return transparency_score, anomaly_ratio, anomalies, agency_df
 
 # Calculate anomaly scores for all agencies
-st.title("⚠️ Anomaly Score Dashboard")
+st.title("Anomaly Score Dashboard")
 st.markdown("This dashboard evaluates and visualizes funding anomalies across awarding agencies.")
 
 # Apply function to all unique agencies
@@ -109,9 +109,12 @@ for agency in unique_agencies:
 # Convert results to DataFrame
 score_df = pd.DataFrame(agency_scores)
 
+score_df_display = score_df[["Agency", "Transparency Score", "Anomaly Ratio"]]
+
 # Display scores
 st.subheader("📊 Agency Transparency Scores")
-st.write(score_df.sort_values(by="Transparency Score", ascending=True))
+
+st.write(score_df_display.sort_values(by="Transparency Score", ascending=True))
 
 # **Visualization: Agencies by Anomaly Score**
 st.subheader("📉 Transparency Score by Agency")
