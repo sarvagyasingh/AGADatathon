@@ -88,35 +88,7 @@ with col3:
     st.metric("Total Recipients Analyzed", f"{metrics['recipient_name']:,}")
     st.metric("Year Analyzed", "2023")
 
-# Top 5 agencies
-# Compute top 5 agencies by total outlayed amount
-top_5_agencies = (
-    dataset.groupby('awarding_agency_name')['total_outlayed_amount']
-    .sum()
-    .nlargest(5)
-    .reset_index()
-)
 
-top_5_agencies = dataset.groupby('awarding_agency_name')['total_outlayed_amount'].sum().nlargest(5).reset_index()
-top_5_agencies["formatted_outlayed_amount"] = top_5_agencies["total_outlayed_amount"].apply(number_to_abbreviation)
-
-# Visualization
-st.subheader("🏛️ Top 5 Agencies by Total Outlayed Amount")
-
-fig = px.bar(
-    top_5_agencies,
-    x="total_outlayed_amount",
-    y="awarding_agency_name",
-    orientation="h",
-    text=top_5_agencies["formatted_outlayed_amount"],  # Use formatted values
-    labels={"awarding_agency_name": "Agency", "total_outlayed_amount": "Total Outlayed Amount ($)"}
-)
-
-# Improve layout
-fig.update_traces(marker_color="steelblue", textposition="outside")
-fig.update_layout(yaxis_categoryorder="total ascending", height=400)
-
-st.plotly_chart(fig, use_container_width=True)
 
 split_columns = dataset['prime_award_summary_place_of_performance_cd_original'].str.split('-', n=1, expand=True)
 split_columns = split_columns.rename(
@@ -131,8 +103,6 @@ st.markdown(
 )
 
 agency_input = st.selectbox("**Select an awarding agency:**", dataset["awarding_agency_name"].unique(), key="agency_select")
-
-st.subheader("📊 Visualizer")
 
 # Vlad's Viz Supporter
 obligated_negatives = dataset[dataset["total_obligated_amount"] < 0]
@@ -353,7 +323,8 @@ def outlayed_amount_per_state(df, agency_name):
         hover_name='primary_place_of_performance_state_name',
         color_continuous_scale="Magma",
         scope="usa",
-        title="📍 Total Outlayed Amount Per State ($)"
+        title="📍 Total Outlayed Amount Per State ($)",
+        labels={'total_outlayed_amount': 'Total Outlayed ($B)'}
     )
 
     # Center the map properly
@@ -416,9 +387,12 @@ def plot_subagency_obligated_vs_outlayed(df, agency_name):
         color="Funding Type",
         barmode="group",
         title=f"💰 Obligated vs. Outlayed Amount by Sub-Agency - {agency_name}",
-        labels={"awarding_sub_agency_name": "Sub-Agency", "Amount": "Funding Amount ($)"},
+        labels={"awarding_sub_agency_name": "Sub-Agency", "Amount": "Funding Amount ($)",
+                "Funding Type": "Funding Category"},
         text_auto=True
     )
+    fig.for_each_trace(lambda t: t.update(name="Total Obligated Amount" if t.name == "total_obligated_amount"
+    else "Total Outlayed Amount" if t.name == "total_outlayed_amount" else t.name))
 
     # Layout Adjustments
     fig.update_xaxes(tickangle=-45)
@@ -520,7 +494,7 @@ def plot_total_vs_anomalous_grants(df, agency_name):
 
 
 # 📊 Call the function using the existing dropdown
-plot_total_vs_anomalous_grants(dataset, agency_input)
+#plot_total_vs_anomalous_grants(dataset, agency_input)
 
 #Vlad's viz
 # Step 1: Filter for awarding agencies with at least 10 instances
