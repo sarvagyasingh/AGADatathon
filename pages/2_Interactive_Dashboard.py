@@ -432,7 +432,7 @@ def obligation_ratio_plot(df, agency_name):
         category_counts_df,
         x="Category",
         y="Count",
-        title="⚠️    Distribution of Obligation Utilization Ratio Categories",
+        title="📊 Distribution of Obligation Utilization Ratio Categories",
         labels={"Category": "Obligation Utilization Ratio Range", "Count": "Number of Grants"},
         text_auto=True,
         color_discrete_sequence=["#1f77b4"]
