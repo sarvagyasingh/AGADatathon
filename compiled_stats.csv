@@ -1,0 +1,184 @@
+awarding_agency_name,year,total_outlayed_amount,normalized_funding
+Agency for International Development,2020,1614248.0543686869,1.0
+Agency for International Development,2021,4744755.480637065,2.9392976301233222
+Agency for International Development,2022,5113064.655361408,3.167459078871907
+Agency for International Development,2023,9335476.017680323,5.783173157567358
+Agency for International Development,2024,20815464.356151436,12.894836267460837
+Appalachian Regional Commission,2020,273693.85125,1.0
+Appalachian Regional Commission,2021,158169.5344680851,0.5779067879884828
+Appalachian Regional Commission,2022,279249.4092948718,1.0202984393675587
+Appalachian Regional Commission,2023,297092.165,1.0854908272258819
+Appalachian Regional Commission,2024,339794.37,1.24151261874576
+Consumer Product Safety Commission,2021,159769.745,
+Consumer Product Safety Commission,2022,172355.864,
+Consumer Product Safety Commission,2023,117996.44714285713,
+Consumer Product Safety Commission,2024,240303.36,
+Corporation for National and Community Service,2020,60786.651750000005,1.0
+Corporation for National and Community Service,2021,103773.9284375,1.7071828345521596
+Corporation for National and Community Service,2022,386953.3119512195,6.365761245456647
+Corporation for National and Community Service,2023,1022457.9887694482,16.82043605518128
+Corporation for National and Community Service,2024,1176284.992032136,19.351041029038683
+Delta Regional Authority,2020,105769.136,1.0
+Delta Regional Authority,2022,120319.06307692308,1.1375630701656019
+Denali Commission,2020,,
+Denali Commission,2021,190650.9875,
+Denali Commission,2022,406253.5023809524,
+Denali Commission,2023,1238913.0531249999,
+Denali Commission,2024,612495.3565,
+Department of Agriculture,2020,391139.4321224227,1.0
+Department of Agriculture,2021,1774781.091678879,4.5374639985758085
+Department of Agriculture,2022,2114409.295070334,5.405768688666872
+Department of Agriculture,2023,6572309.278360042,16.80298312726234
+Department of Agriculture,2024,11273834.625565732,28.823058223485727
+Department of Commerce,2020,725558.9995327103,1.0
+Department of Commerce,2021,711491.3644295302,0.9806113147073633
+Department of Commerce,2022,457599.9775889967,0.630686102555009
+Department of Commerce,2023,205998.73786407767,0.28391728032696073
+Department of Commerce,2024,625524.3915479116,0.8621275347018986
+Department of Defense,2020,26338.15,1.0
+Department of Defense,2021,32096.43528428094,1.2186290716804686
+Department of Defense,2022,144311.84346604216,5.479194380244708
+Department of Defense,2023,299806.5307142857,11.382976052391138
+Department of Defense,2024,916143.5221840874,34.78389796489455
+Department of Education,2020,3968047.158720837,1.0
+Department of Education,2021,18685241.936588544,4.708926378438513
+Department of Education,2022,12209761.17702384,3.0770201786008635
+Department of Education,2023,4706060.480971018,1.1859890502128234
+Department of Education,2024,3656583.1304780478,0.921506974140097
+Department of Energy,2020,333825.5412087912,1.0
+Department of Energy,2021,505742.4039823009,1.5149901417099307
+Department of Energy,2022,731150.548556701,2.1902175187350417
+Department of Energy,2023,1141347.1962758924,3.4189930229515806
+Department of Energy,2024,2010553.2261733573,6.022766319476606
+Department of Health and Human Services,2020,628544.8748529411,1.0
+Department of Health and Human Services,2021,2302679.5469402988,3.663508587957304
+Department of Health and Human Services,2022,1875267.375091852,2.983505951791593
+Department of Health and Human Services,2023,15571271.976120854,24.77352469028408
+Department of Health and Human Services,2024,11117473.53906757,17.687636927544265
+Department of Homeland Security,2020,974905.2981447963,1.0
+Department of Homeland Security,2021,902436.193413242,0.9256654929771538
+Department of Homeland Security,2022,773423.785250321,0.7933322208035118
+Department of Homeland Security,2023,1288310.9090131577,1.3214728768678958
+Department of Homeland Security,2024,1102644.7293581082,1.1310275279623516
+Department of Housing and Urban Development,2020,1258425.3638010554,1.0
+Department of Housing and Urban Development,2021,1323595.71328751,1.051787218663178
+Department of Housing and Urban Development,2022,679142.6853620989,0.5396765711323224
+Department of Housing and Urban Development,2023,797001.4697278405,0.6333323315421021
+Department of Housing and Urban Development,2024,823493.8109212844,0.654384308048221
+Department of Justice,2020,460909.77178754186,1.0
+Department of Justice,2021,809891.6521029174,1.7571587796065216
+Department of Justice,2022,494333.3001156069,1.0725164237643279
+Department of Justice,2023,633690.4362790697,1.3748687380209674
+Department of Justice,2024,824878.192962349,1.7896739089805624
+Department of Labor,2020,4402703.813243243,1.0
+Department of Labor,2021,2001391.5868499426,0.4545823820420982
+Department of Labor,2022,4214859.710841026,0.9573343766988854
+Department of Labor,2023,6967298.775667116,1.5825045406664933
+Department of Labor,2024,8632307.501175852,1.9606832227073845
+Department of State,2020,181247.10539823008,1.0
+Department of State,2021,1002027.4567432951,5.528515639141789
+Department of State,2022,1512784.686153846,8.34653156435247
+Department of State,2023,1281482.1560592256,7.070359293427588
+Department of State,2024,2203026.6967107,12.154824165993071
+Department of Transportation,2020,1399763.8813280065,1.0
+Department of Transportation,2021,1628642.537330085,1.1635123316547737
+Department of Transportation,2022,1602396.5927251251,1.1447620660170725
+Department of Transportation,2023,2509716.4777969425,1.7929570203053702
+Department of Transportation,2024,2536807.2550802967,1.8123108396492815
+Department of Veterans Affairs,2020,1439179.9686622072,1.0
+Department of Veterans Affairs,2021,1373730.9220212766,0.9545233757653193
+Department of Veterans Affairs,2022,1559887.1766772151,1.0838722124010742
+Department of Veterans Affairs,2023,1727331.6138306453,1.2002193272855861
+Department of Veterans Affairs,2024,1147581.1852905198,0.7973854627488015
+Department of the Interior,2020,192933.97268673356,1.0
+Department of the Interior,2021,299566.7326781762,1.5526904282667833
+Department of the Interior,2022,381222.82203009655,1.9759237666716538
+Department of the Interior,2023,415211.87219016184,2.1520931042265965
+Department of the Interior,2024,792547.92348884,4.107871270425236
+Department of the Treasury,2020,418159.53990384616,1.0
+Department of the Treasury,2021,510895.688828125,1.2217721708456133
+Department of the Treasury,2022,671456.0340625,1.6057412781181513
+Department of the Treasury,2023,1320888.1544554457,3.1588138698430215
+Department of the Treasury,2024,826915.4790344829,1.9775119305531765
+Election Assistance Commission,2021,4758205.5528,
+Election Assistance Commission,2022,6543951.3175,
+Election Assistance Commission,2023,6889442.193333332,
+Election Assistance Commission,2024,5017417.563023256,
+Environmental Protection Agency,2020,770710.4004265403,1.0
+Environmental Protection Agency,2021,1131438.5894105115,1.468046348906581
+Environmental Protection Agency,2022,2008808.1597546975,2.6064370723983314
+Environmental Protection Agency,2023,1745770.3700561447,2.2651444292044967
+Environmental Protection Agency,2024,1281220.2506075948,1.6623886869808933
+Executive Office of the President,2020,1474684.3014130434,1.0
+Executive Office of the President,2021,1289282.7783425413,0.8742771433229131
+Executive Office of the President,2022,1462188.747942857,0.9915266247438769
+Executive Office of the President,2023,1577208.1864827585,1.0695225988175752
+Executive Office of the President,2024,1572033.1994285714,1.0660133819301176
+Gulf Coast Ecosystem Restoration Council,2020,119666.36,1.0
+Gulf Coast Ecosystem Restoration Council,2021,304225.595,2.5422816821703274
+Gulf Coast Ecosystem Restoration Council,2022,666124.095,5.5665108807521175
+Gulf Coast Ecosystem Restoration Council,2023,2253126.4196874998,18.828402733128172
+Gulf Coast Ecosystem Restoration Council,2024,2024860.9470769232,16.920886931606535
+Institute of Museum and Library Services,2020,147340.2588888889,1.0
+Institute of Museum and Library Services,2021,433532.0059333333,2.9423866172263557
+Institute of Museum and Library Services,2022,435956.85220512823,2.958844076240484
+Institute of Museum and Library Services,2023,275379.64619521913,1.8690047667344354
+Institute of Museum and Library Services,2024,261672.9765764023,1.7759774453344288
+Inter-American Foundation,2020,182217.05729166666,1.0
+Inter-American Foundation,2021,241450.76953125,1.3250722688643282
+Inter-American Foundation,2022,318612.49166666664,1.7485327466170082
+Inter-American Foundation,2023,381068.8674698795,2.0912908655961866
+Inter-American Foundation,2024,329569.50254237285,1.8086643887286895
+Millennium Challenge Corporation,2020,0.0,0.0
+Millennium Challenge Corporation,2021,-30919.216363636366,-30919.216363636366
+Millennium Challenge Corporation,2022,986.9766666666692,986.9766666666692
+Millennium Challenge Corporation,2023,0.0,0.0
+Millennium Challenge Corporation,2024,16252.93818181818,16252.93818181818
+National Aeronautics and Space Administration,2020,110389.04978494624,1.0
+National Aeronautics and Space Administration,2021,167795.80163892446,1.5200402754241913
+National Aeronautics and Space Administration,2022,270228.5847592499,2.447965493730529
+National Aeronautics and Space Administration,2023,485085.6280840488,4.394327417701896
+National Aeronautics and Space Administration,2024,706350.8146496188,6.398739875247517
+National Archives and Records Administration,2020,88488.8225,1.0
+National Archives and Records Administration,2021,54024.35566666666,0.6105218053575825
+National Archives and Records Administration,2022,113950.88462686568,1.2877432584987294
+National Archives and Records Administration,2023,128394.695,1.4509707709129027
+National Archives and Records Administration,2024,82080.45725,0.9275799466085111
+National Endowment for the Arts,2020,97658.53425925925,1.0
+National Endowment for the Arts,2021,304683.7740597015,3.119888869628551
+National Endowment for the Arts,2022,105504.59775862069,1.0803418109730387
+National Endowment for the Arts,2023,346814.1893220339,3.5512942309919175
+National Endowment for the Arts,2024,388680.38185483875,3.979994014890583
+National Endowment for the Humanities,2020,7982.142857142857,1.0
+National Endowment for the Humanities,2021,12566.743829787234,1.5743571688324052
+National Endowment for the Humanities,2022,18003.15693069307,2.25542905619421
+National Endowment for the Humanities,2023,13182.193717948718,1.6514605105260138
+National Endowment for the Humanities,2024,119201.69437908496,14.933545604538608
+National Science Foundation,2020,234654.01156705883,1.0
+National Science Foundation,2021,225568.3995115928,0.9612808151252528
+National Science Foundation,2022,325662.63052262,1.3878417349347252
+National Science Foundation,2023,464283.2903814602,1.97858663178566
+National Science Foundation,2024,993146.8222775712,4.23238799816449
+Nuclear Regulatory Commission,2020,188037.93399999998,1.0
+Nuclear Regulatory Commission,2021,235625.2495,1.2530729544178039
+Nuclear Regulatory Commission,2022,304528.21857142856,1.6195041718094425
+Nuclear Regulatory Commission,2023,288624.2106666667,1.5349254510883252
+Nuclear Regulatory Commission,2024,267378.55984615383,1.4219394680551738
+Small Business Administration,2020,302448.8610837438,1.0
+Small Business Administration,2021,579938.3872704082,1.9174758509334624
+Small Business Administration,2022,472028.82548484846,1.560689710628966
+Small Business Administration,2023,669262.8952293578,2.2128134086246347
+Small Business Administration,2024,594300.8036842105,1.9649629413537684
+Social Security Administration,2020,,
+Social Security Administration,2021,212401.73249999998,
+Social Security Administration,2022,927666.9136111111,
+Social Security Administration,2023,3269155.23,
+Social Security Administration,2024,742431.4758333333,
+U.S. Agency for Global Media,2020,,
+U.S. Agency for Global Media,2021,,
+U.S. Agency for Global Media,2022,10582344.0,
+U.S. Agency for Global Media,2023,6000000.0,
+U.S. International Development Finance Corporation,2022,821494.05,
+U.S. International Development Finance Corporation,2024,226914.0,
+United States Institute of Peace,2020,,
+United States Institute of Peace,2022,,
