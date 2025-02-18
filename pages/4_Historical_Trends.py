@@ -5,7 +5,7 @@ import plotly.express as px
 
 # Load the dataset
 def load_data():
-    df = pd.read_csv("/Users/sarvagya/Developer/agaDatathon2/compiled_stats.csv")
+    df = pd.read_csv("compiled_stats.csv")
     df["year"] = df["year"].astype(int)
     df["total_outlayed_amount"] = pd.to_numeric(df["total_outlayed_amount"], errors='coerce')
     return df
