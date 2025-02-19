@@ -78,8 +78,8 @@ def calculate_smb_transparency_score(df, agency_name):
 
     # Adjust transparency score with gentler logarithmic scaling
     base_score = 100
-    score_penalty = min(60, np.log1p(total_weighted_anomalies) * 8) if total_weighted_anomalies > 0 else 0
-    transparency_score = max(40, base_score - score_penalty)  # Minimum score of 40
+    score_penalty = min(60, np.log1p(anomaly_ratio * 1000) * 8) if anomaly_ratio > 0 else 0  # Scale anomaly ratio
+    transparency_score = max(40, base_score - score_penalty)  # Ensure minimum score of 40
 
     # Small bonus for agencies with <3% anomalies
     if anomaly_ratio < 0.03:
@@ -128,7 +128,7 @@ fig = px.bar(
     category_orders={"Agency": score_df.sort_values(by="Transparency Score", ascending=True)["Agency"].tolist()},
     hover_data={"Agency": True, "Transparency Score": True}
 )
-
+fig.update_xaxes(range=[50, 100]) 
 st.plotly_chart(fig, use_container_width=True)
 
 # Display the DataFrame without scrolling

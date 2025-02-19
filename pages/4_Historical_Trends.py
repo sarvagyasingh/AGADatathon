@@ -58,7 +58,7 @@ else:
         y="normalized_funding",
         color="awarding_sub_agency_name",
         markers=True,
-        title=f"Funding Trend for Top 5 Sub-Agencies under {agency_input}",
+        title=f"Funding Trends for Grants Awarded by the Top 5 Sub-Agencies under {agency_input}",
         labels={
         "normalized_funding": "Funding Change (Normalized to 2020)",
         "year": "Year",
@@ -102,7 +102,7 @@ fig_yoy = px.line(
     y="yoy_growth",
     color="awarding_sub_agency_name",
     markers=True,
-    title=f"📈 YoY Growth in Outlayed Amount - Top 5 Sub-Agencies under {agency_input}",
+    title=f"YoY Growth in Outlayed Amount by Top 5 Sub-Agencies under {agency_input}",
     labels={
         "yoy_growth": "YoY Growth (%)",
         "year": "Year",

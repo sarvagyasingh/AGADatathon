@@ -55,17 +55,17 @@ st.markdown(
 
 
 # Title and introduction
-st.title("📊 Federal Spending Transparency Dashboard")
+st.title("📊 Federal Spending Transparency Platform")
 st.markdown("""
 🚀 **Objective:** Improve public access to federal spending data and highlight inconsistencies in fund allocation.
 
 ## 🔹 What We’re Building
-🖥️ **Interactive Data Dashboard** to analyze and visualize federal spending data from **usaspending.gov**.  
+🖥️ **Interactive Data Dashboard** to analyze, visualize and extract federal spending data from **usaspending.gov**.  
 
 ### 📊 **Key Features**
-- **State-Level Insights** – View federal funding distribution across states.  
-- **Agency & Sub-Agency Trends** – Track how funds are allocated by different government entities.  
-- **Discrepancy Detection** – Identify and visualize inconsistencies or gaps in spending data.  
+- **State and Agency Insights** – Federal funding analysis across agencies at state level.
+- **Historic Trends** – Fund allocation trends and tracking.  
+- **Anomaly Tracking** – Identify and visualize inconsistencies or gaps in spending data.  
 - **Dynamic Visualizations** – Generate charts, maps, and analytics for deeper insights.  
 
 ## 🎯 **Why It Matters?**
