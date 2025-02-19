@@ -89,7 +89,10 @@ def calculate_smb_transparency_score(df, agency_name):
 
 # Calculate anomaly scores for all agencies
 st.title("Anomaly Score Dashboard")
-st.markdown("This dashboard evaluates and visualizes funding anomalies across awarding agencies.")
+st.markdown(
+    "<hr style='border: 0.5px solid lightgray; margin-top: -5px;'>", 
+    unsafe_allow_html=True
+)
 
 # Apply function to all unique agencies
 unique_agencies = dataset["awarding_agency_name"].unique()
@@ -114,17 +117,11 @@ score_df_display = score_df[["Agency", "Transparency Score", "Anomaly Ratio"]]
 # Display scores
 st.subheader("📊 Agency Transparency Scores")
 
-st.write(score_df_display.sort_values(by="Transparency Score", ascending=True).reset_index(drop=True))
-
-# **Visualization: Agencies by Anomaly Score**
-st.subheader("📉 Transparency Score by Agency")
-
 fig = px.bar(
     score_df.sort_values(by="Transparency Score", ascending=True),
     x="Transparency Score",
     y="Agency",
     orientation="h",
-    title="Transparency Score of Awarding Agencies",
     labels={"Transparency Score": "Transparency Score (Higher is Better)", "Agency": "Awarding Agency"},
     color="Transparency Score",
     color_continuous_scale="RdYlGn",
@@ -134,9 +131,32 @@ fig = px.bar(
 
 st.plotly_chart(fig, use_container_width=True)
 
+# Display the DataFrame without scrolling
+st.dataframe(score_df_display.sort_values(by="Transparency Score", ascending=True), hide_index=True, use_container_width=True)
+
+# Add a subtle horizontal line for separation
+st.markdown(
+    "<hr style='border: 0.5px solid lightgray; margin-top: 30px;'>", 
+    unsafe_allow_html=True
+)
+
 # **Selection Mechanism**
 st.subheader("🔍 Select an Agency to View Anomaly Breakdown")
-selected_agency = st.selectbox(" ", score_df["Agency"].unique())
+
+# Get unique agencies list
+agency_list = score_df["Agency"].unique()
+
+# Set default agency (check if it exists in the dataset)
+default_agency = "Department of Transportation"
+default_index = list(agency_list).index(default_agency) if default_agency in agency_list else 0  # Default to index 0 if not found
+
+# Agency Selection Dropdown with default value
+selected_agency = st.selectbox(
+    " ",  # Label
+    agency_list,
+    index=default_index,  # Set default index
+    key="agency_select"
+)
 
 # Show detailed breakdown **only if an agency is selected**
 if selected_agency:

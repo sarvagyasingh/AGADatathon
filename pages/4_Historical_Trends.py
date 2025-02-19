@@ -14,11 +14,23 @@ df["year"] = df["year"].astype(int)
 
 # Streamlit App
 st.title("📈 Historical Funding Trends")
+st.markdown(
+    "<hr style='border: 0.5px solid lightgray; margin-top: -5px;'>", 
+    unsafe_allow_html=True
+)
+
+# Get unique agencies list
+agency_list = df["awarding_agency_name"].unique()
+
+# Set default agency (check if it exists in the dataset)
+default_agency = "Department of Housing and Urban Development"
+default_index = list(agency_list).index(default_agency) if default_agency in agency_list else 0  # Default to index 0 if not found
 
 # Agency Selection Dropdown
 agency_input = st.selectbox(
     "**Select an awarding agency:**",
-    df["awarding_agency_name"].unique(),
+    agency_list,
+    index=default_index,  # Set default index
     key="agency_select"
 )
 
@@ -37,6 +49,7 @@ else:
     )
 
     agency_data = agency_data[agency_data["awarding_sub_agency_name"].isin(top_5_subagencies)]
+    agency_data["year"] = agency_data["year"].astype(str)  # Convert to string 
 
     # Plotly Line Chart for Funding Trend
     fig = px.line(
@@ -46,12 +59,16 @@ else:
         color="awarding_sub_agency_name",
         markers=True,
         title=f"Funding Trend for Top 5 Sub-Agencies under {agency_input}",
-        labels={"normalized_funding": "Funding Change (Normalized to 2020)", "year": "Year"},
-    )
+        labels={
+        "normalized_funding": "Funding Change (Normalized to 2020)",
+        "year": "Year",
+        "awarding_sub_agency_name": "Sub-Agency"  
+    },
+)
 
     # Add baseline line
     fig.add_hline(y=1, line_dash="dash", line_color="black", annotation_text="Baseline (2020)")
-
+    fig.update_xaxes(type="category")
     st.plotly_chart(fig, use_container_width=True)
 
 # **Top 5 Sub-Agencies by YoY Growth for Selected Agency**
@@ -76,6 +93,7 @@ top_5_subagencies_growth = (
 
 # Filter for only top 5 sub-agencies
 agency_data = agency_data[agency_data["awarding_sub_agency_name"].isin(top_5_subagencies_growth)]
+agency_data["year"] = agency_data["year"].astype(str)
 
 # Plot YoY Growth as Line Chart
 fig_yoy = px.line(
@@ -85,10 +103,14 @@ fig_yoy = px.line(
     color="awarding_sub_agency_name",
     markers=True,
     title=f"📈 YoY Growth in Outlayed Amount - Top 5 Sub-Agencies under {agency_input}",
-    labels={"yoy_growth": "YoY Growth (%)", "year": "Year"},
-)
+    labels={
+        "yoy_growth": "YoY Growth (%)",
+        "year": "Year",
+        "awarding_sub_agency_name": "Sub-Agency"  
+    },
+ )
 
 # Format YoY Growth to Percentage
 fig_yoy.update_yaxes(tickformat=".1%")
-
+fig_yoy.update_xaxes(type="category")
 st.plotly_chart(fig_yoy, use_container_width=True)
