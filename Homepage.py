@@ -76,7 +76,7 @@ st.markdown("""
 ---
 """)
 
-st.info("🔍 Select a page from the sidebar to get started!")
+
 
 # Preload dataset in session state
 if "dataset" not in st.session_state:
@@ -115,6 +115,72 @@ if "dataset" not in st.session_state:
         ]
         return pd.read_csv(output, usecols=selected_columns, low_memory=False)
 
+    team_members = [
+        {
+            "name": "Bhavya More",
+            "role": "Product Manager",
+            "image": "/Users/sarvagyasingh/Developer/AGADatathon/team_assets/bhavya.jpg",
+            "linkedin": "https://www.linkedin.com/in/bhavya-more-582230124/"
+        },
+        {
+            "name": "Megha Kalal",
+            "role": "Developer",
+            "image": "/Users/sarvagyasingh/Developer/AGADatathon/team_assets/Megha.jpg",
+            "linkedin": "https://www.linkedin.com/in/megha-kalal-a6061a166/"
+        },
+        {
+            "name": "Sai Shashank Kudkuli",
+            "role": "Analyst",
+            "image": "/Users/sarvagyasingh/Developer/AGADatathon/team_assets/Shashank.png",
+            "linkedin": "https://www.linkedin.com/in/saishashankk/"
+        },
+        {
+            "name": "Sarvagya Singh",
+            "role": "Developer",
+            "image": "/Users/sarvagyasingh/Developer/AGADatathon/team_assets/Sarvagya.jpg",
+            "linkedin": "https://www.linkedin.com/in/sarvagyasingh1/"
+        },
+        {
+            "name": "Vladimir Martirosyan",
+            "role": "Analyst",
+            "image": "/Users/sarvagyasingh/Developer/AGADatathon/team_assets/Vlad.jpeg",
+            "linkedin": "https://www.linkedin.com/in/vladimir-martirosyan-a9b120226/"
+        },
+    ]
+
+    # Add Team Section to Homepage
+    st.markdown("## 🚀 Meet the Team")
+
+    IMAGE_SIZE = 150
+
+    # Create a row for team members
+    cols = st.columns(len(team_members))
+
+    for idx, member in enumerate(team_members):
+        with cols[idx]:
+            st.image(member["image"], width=150)
+            st.markdown(
+                f"""
+                <div style="text-align: center;">
+                    <h4 style="margin: 10px 0px 5px;">
+                        <a href="{member['linkedin']}" target="_blank" style="text-decoration: none; color: white;">
+                            {member['name']}
+                        </a>
+                    </h4>
+                    <p style="font-weight: bold; margin: 0;">{member['role']}</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+            #st.write(member["bio"])
+
+    st.markdown("""
+                
+                
+    """, unsafe_allow_html=True)
+
+
+    st.info("🔍 Select a page from the sidebar to get started!")
 
     # Load dataset in the background
     st.session_state["dataset"] = load_data()
