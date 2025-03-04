@@ -157,19 +157,35 @@ if "dataset" not in st.session_state:
     cols = st.columns(len(team_members))
 
     for idx, member in enumerate(team_members):
-        with cols[idx]:
+        with cols[idx]:  # Place each member inside a column
+            # Display image separately using st.image
             st.image(member["image"], width=150)
+
+            # Use markdown for text with adaptive color
             st.markdown(
                 f"""
-                        <div style="text-align: center;">
-                            <h4 style="margin-bottom:5px; color: black;">
-                                <a href="{member['linkedin']}" target="_blank" style="text-decoration: none; color: black;">
-                                    {member['name']}
-                                </a>
-                            </h4>
-                            <p style="font-weight: bold; color: black;">{member['role']}</p>
-                        </div>
-                        """,
+                <div style="text-align: center;">
+                    <h4 style="margin-bottom:5px; color: var(--text-color);">
+                        <a href="{member['linkedin']}" target="_blank" style="text-decoration: none; color: var(--text-color);">
+                            {member['name']}
+                        </a>
+                    </h4>
+                    <p style="font-weight: bold; color: var(--text-color);">{member['role']}</p>
+                </div>
+
+                <style>
+                    @media (prefers-color-scheme: dark) {{
+                        :root {{
+                            --text-color: white;
+                        }}
+                    }}
+                    @media (prefers-color-scheme: light) {{
+                        :root {{
+                            --text-color: black;
+                        }}
+                    }}
+                </style>
+                """,
                 unsafe_allow_html=True
             )
             #st.write(member["bio"])
