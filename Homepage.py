@@ -119,31 +119,31 @@ if "dataset" not in st.session_state:
         {
             "name": "Bhavya More",
             "role": "Product Manager",
-            "image": "/Users/sarvagyasingh/Developer/AGADatathon/team_assets/bhavya.jpg",
+            "image": "team_assets/bhavya.jpg",
             "linkedin": "https://www.linkedin.com/in/bhavya-more-582230124/"
         },
         {
             "name": "Megha Kalal",
             "role": "Developer",
-            "image": "/Users/sarvagyasingh/Developer/AGADatathon/team_assets/Megha.jpg",
+            "image": "team_assets/Megha.jpg",
             "linkedin": "https://www.linkedin.com/in/megha-kalal-a6061a166/"
         },
         {
             "name": "Sai Shashank Kudkuli",
             "role": "Analyst",
-            "image": "/Users/sarvagyasingh/Developer/AGADatathon/team_assets/Shashank.png",
+            "image": "team_assets/Shashank.png",
             "linkedin": "https://www.linkedin.com/in/saishashankk/"
         },
         {
             "name": "Sarvagya Singh",
             "role": "Developer",
-            "image": "/Users/sarvagyasingh/Developer/AGADatathon/team_assets/Sarvagya.jpg",
+            "image": "team_assets/Sarvagya.jpg",
             "linkedin": "https://www.linkedin.com/in/sarvagyasingh1/"
         },
         {
             "name": "Vladimir Martirosyan",
             "role": "Analyst",
-            "image": "/Users/sarvagyasingh/Developer/AGADatathon/team_assets/Vlad.jpeg",
+            "image": "team_assets/Vlad.jpeg",
             "linkedin": "https://www.linkedin.com/in/vladimir-martirosyan-a9b120226/"
         },
     ]
