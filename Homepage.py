@@ -161,15 +161,15 @@ if "dataset" not in st.session_state:
             st.image(member["image"], width=150)
             st.markdown(
                 f"""
-                <div style="text-align: center;">
-                    <h4 style="margin: 10px 0px 5px;">
-                        <a href="{member['linkedin']}" target="_blank" style="text-decoration: none; color: white;">
-                            {member['name']}
-                        </a>
-                    </h4>
-                    <p style="font-weight: bold; margin: 0;">{member['role']}</p>
-                </div>
-                """,
+                        <div style="text-align: center;">
+                            <h4 style="margin-bottom:5px; color: black;">
+                                <a href="{member['linkedin']}" target="_blank" style="text-decoration: none; color: black;">
+                                    {member['name']}
+                                </a>
+                            </h4>
+                            <p style="font-weight: bold; color: black;">{member['role']}</p>
+                        </div>
+                        """,
                 unsafe_allow_html=True
             )
             #st.write(member["bio"])
