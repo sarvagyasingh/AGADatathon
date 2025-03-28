@@ -125,7 +125,7 @@ if "dataset" not in st.session_state:
         {
             "name": "Megha Kalal",
             "role": "Developer",
-            "image": "team_assets/Megha.jpg",
+            "image": "team_assets/Megha3.jpg",
             "linkedin": "https://www.linkedin.com/in/megha-kalal-a6061a166/"
         },
         {
